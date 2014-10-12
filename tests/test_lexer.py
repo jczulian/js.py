@@ -1,5 +1,4 @@
 import unittest
-from ply.lex import LexToken
 
 from javascrypthon import lexer
 
