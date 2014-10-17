@@ -1,27 +1,54 @@
 from ply import yacc
-from javascrypthon.lexer import *
-from javascrypthon.ast import JSPYBinOp, JSPYNumber
+from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement
 
 
 def p_program(p):
     """
-    program : top_statement
+    program : top_statements
     """
-    p[0] = p[1]
+    statements = list()
+    functions = list()
+
+    for stmt in p[1]:
+        if isinstance(stmt, JSPYStatement):
+            statements.append(stmt)
+        else:
+            functions.append(stmt)
+
+    p[0] = JSPYRoot(statements=statements, functions=functions)
+
+
+def p_top_statements(p):
+    """
+    top_statements : top_statements top_statement
+                   | empty
+    """
+    if len(p) == 2:
+        p[0] = list()
+    else:
+        p[1].append(p[2])
+        p[0] = p[1]
 
 
 def p_top_statement(p):
     """
     top_statement : statement
+                  | function_definition
     """
     p[0] = p[1]
+
+
+def p_function_definition(p):
+    """
+    function_definition : empty
+    """
 
 
 def p_statement(p):
     """
     statement : expression_statement optional_semicolon
     """
-    p[0] = p[1]
+    p[0] = JSPYStatement(node=p[1])
 
 
 def p_optional_semicolon(p):
