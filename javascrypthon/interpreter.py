@@ -15,4 +15,10 @@ class JSPYInterpreter(object):
             self.interpret_function(function, env)
 
         for statement in ast_root.statements_list:
-            self.interpre_statement(statement, env)
+            self.interpret_statement(statement, env)
+
+    def interpret_statement(self, statement, env):
+        pass
+
+    def interpret_function(self, function, env):
+        pass

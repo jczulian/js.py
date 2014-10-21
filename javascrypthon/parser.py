@@ -1,5 +1,7 @@
 from ply import yacc
-from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement
+from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString
+
+from javascrypthon.lexer import tokens
 
 
 def p_program(p):
@@ -59,6 +61,13 @@ def p_optional_semicolon(p):
     pass
 
 
+def p_empty_statement(p):
+    """
+    empty_statement : ';'
+    """
+    pass
+
+
 def p_expression_statement(p):
     """
     expression_statement : expression
@@ -76,9 +85,15 @@ def p_empty(p):
 def p_simple_expression(p):
     """
     simple_expression : NUMBER
+                      | STRING
                       | parenthesized_expression
     """
-    p[0] = JSPYNumber(p[1])
+    if p.slice[1].type == 'NUMBER':
+        p[0] = JSPYNumber(p[1])
+    elif p.slice[1].type == 'STRING':
+        p[0] = JSPYString(p[1])
+    else:
+        raise Exception('Unknown simple expression encountered.')
 
 
 def p_parenthesized_expression(p):

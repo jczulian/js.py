@@ -7,7 +7,8 @@ tokens = (
     'DIVIDE',
     'LPAREN',
     'RPAREN',
-    'NUMBER'
+    'NUMBER',
+    'STRING'
 )
 
 t_PLUS = r'\+'
@@ -21,6 +22,12 @@ t_RPAREN = r'\)'
 def t_NUMBER(t):
     r'\d+'
     t.value = int(t.value)
+    return t
+
+
+def t_STRING(t):
+    r'"[^"]*"'
+    t.value = str(t.value[1:-1])
     return t
 
 

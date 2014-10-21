@@ -26,3 +26,10 @@ class TestLexer(unittest.TestCase):
         self.assertEqual(token3.type, 'NUMBER')
         self.assertEqual(token3.value, 568)
 
+    def test_simple_string(self):
+        lexer.lexer.input('"coucou la string."')
+
+        token = lexer.lexer.token()
+        self.assertEqual(token.type, 'STRING')
+        self.assertEqual(token.value, "coucou la string.")
+
