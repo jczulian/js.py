@@ -1,5 +1,5 @@
 from ply import yacc
-from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString
+from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString, JSPYAssignment
 
 from javascrypthon.lexer import tokens
 
@@ -49,6 +49,7 @@ def p_function_definition(p):
 def p_statement(p):
     """
     statement : expression_statement optional_semicolon
+              | variable_definition optional_semicolon
     """
     p[0] = JSPYStatement(node=p[1])
 
@@ -66,6 +67,24 @@ def p_empty_statement(p):
     empty_statement : ';'
     """
     pass
+
+
+def p_variable_definition(p):
+    """
+    variable_definition : VAR IDENT variable_initializer
+    """
+    p[0] = JSPYAssignment(var_name=p[2], var_value_node=p[3])
+
+
+def p_variable_initialiser(p):
+    """
+    variable_initializer : EQUAL assignment_expression
+                         | empty
+    """
+    if len(p) == 2:
+        p[0] = None
+    else:
+        p[0] = p[2]
 
 
 def p_expression_statement(p):

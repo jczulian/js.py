@@ -6,6 +6,7 @@ class JSPYRoot(JSPYNode):
     def __init__(self, statements, functions):
         self.functions_list = functions
         self.statements_list = statements
+        self.env = dict()
 
     def __eq__(self, other):
         return self.functions_list == other.functions_list \
@@ -13,10 +14,13 @@ class JSPYRoot(JSPYNode):
 
     def eval(self):
         for function in self.functions_list:
-            function.eval()
+            function.eval(self.env)
 
+        last_stmt_value = None
         for statement in self.statements_list:
-            statement.eval()
+            last_stmt_value = statement.eval(self.env)
+
+        return last_stmt_value
 
 
 class JSPYStatement(JSPYNode):
@@ -27,9 +31,9 @@ class JSPYStatement(JSPYNode):
     def __eq__(self, other):
         return self.statement == other.statement
 
-    def eval(self):
-        value = self.statement.eval()
-        print value
+    def eval(self, env):
+        value = self.statement.eval(env)
+        return value
 
 
 class JSPYNumber(JSPYNode):
@@ -39,7 +43,7 @@ class JSPYNumber(JSPYNode):
     def __eq__(self, other):
         return self.value == other.value
 
-    def eval(self):
+    def eval(self, env):
         return self.value
 
 
@@ -50,7 +54,7 @@ class JSPYString(JSPYNode):
     def __eq__(self, other):
         return self.value == other.value
 
-    def eval(self):
+    def eval(self, env):
         return self.value
 
 
@@ -65,10 +69,12 @@ class JSPYBinOp(JSPYNode):
             and self.lhs == other.lhs \
             and self.rhs == other.rhs
 
-    def eval(self):
-        lhs_value = self.lhs.eval()
-        rhs_value = self.rhs.eval()
+    def eval(self, env):
+        lhs_value = self.lhs.eval(env)
+        rhs_value = self.rhs.eval(env)
 
+        # idealy here we should instead do a lookup on the environment to find
+        # the arithmetic function we are looking for
         if self.operator == '+':
             return lhs_value.__add__(rhs_value)
         elif self.operator == '-':
@@ -77,3 +83,18 @@ class JSPYBinOp(JSPYNode):
             return lhs_value.__mul__(rhs_value)
         elif self.operator == '/':
             return lhs_value.__div__(rhs_value)
+
+
+class JSPYUndefined(JSPYNode):
+    def eval(self, env):
+        return self
+
+
+class JSPYAssignment(JSPYNode):
+    def __init__(self, var_name, var_value_node):
+        self.var_name = var_name
+        self.var_value_node = var_value_node
+
+    def eval(self, env):
+        env[self.var_name] = self.var_value_node.eval(env)
+

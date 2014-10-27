@@ -5,18 +5,27 @@ tokens = (
     'MINUS',
     'MULTIPLY',
     'DIVIDE',
+    'EQUAL',
     'LPAREN',
     'RPAREN',
     'NUMBER',
-    'STRING'
+    'STRING',
+    'IDENT'
 )
 
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_MULTIPLY = r'\*'
 t_DIVIDE = r'\/'
+t_EQUAL = r'='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
+
+reserved = {
+    'var': 'VAR'
+}
+
+tokens = tokens + tuple(reserved.values())
 
 
 def t_NUMBER(t):
@@ -28,6 +37,12 @@ def t_NUMBER(t):
 def t_STRING(t):
     r'"[^"]*"'
     t.value = str(t.value[1:-1])
+    return t
+
+
+def t_IDENT(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value,'IDENT')    # Check for reserved words
     return t
 
 
