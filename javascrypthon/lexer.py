@@ -8,6 +8,7 @@ tokens = (
     'EQUAL',
     'LPAREN',
     'RPAREN',
+    'SEMI_CO',
     'NUMBER',
     'STRING',
     'IDENT'
@@ -20,6 +21,7 @@ t_DIVIDE = r'\/'
 t_EQUAL = r'='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
+t_SEMI_CO = r';'
 
 reserved = {
     'var': 'VAR'

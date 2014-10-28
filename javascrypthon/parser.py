@@ -1,5 +1,5 @@
 from ply import yacc
-from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString, JSPYAssignment
+from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString, JSPYAssignment, JSPYVariable
 
 from javascrypthon.lexer import tokens
 
@@ -56,7 +56,7 @@ def p_statement(p):
 
 def p_optional_semicolon(p):
     """
-    optional_semicolon : ';'
+    optional_semicolon : SEMI_CO
                        | empty
     """
     pass
@@ -64,7 +64,7 @@ def p_optional_semicolon(p):
 
 def p_empty_statement(p):
     """
-    empty_statement : ';'
+    empty_statement : SEMI_CO
     """
     pass
 
@@ -103,11 +103,14 @@ def p_empty(p):
 
 def p_simple_expression(p):
     """
-    simple_expression : NUMBER
+    simple_expression : IDENT
+                      | NUMBER
                       | STRING
                       | parenthesized_expression
     """
-    if p.slice[1].type == 'NUMBER':
+    if p.slice[1].type == 'IDENT':
+        p[0] = JSPYVariable(p[1])
+    elif p.slice[1].type == 'NUMBER':
         p[0] = JSPYNumber(p[1])
     elif p.slice[1].type == 'STRING':
         p[0] = JSPYString(p[1])

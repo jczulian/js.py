@@ -1,4 +1,5 @@
 import unittest
+from javascrypthon.ast import JSPYException
 
 from javascrypthon.parser import parser
 
@@ -24,6 +25,14 @@ class TestInterpreter(unittest.TestCase):
         root.eval()
         self.assertIsNotNone(root.env.get('x', None), 'x should have been recorded in the env')
         self.assertEqual(35, root.env['x'])
+
+    def test_using_assigned_variable(self):
+        root = parser.parse("var x = 12; var y = x + 3")
+        root.eval()
+
+    def test_unbound_variable(self):
+        root = parser.parse("var x = y + 2")
+        self.assertRaises(JSPYException, root.eval, *[])
 
     def test_function_declaration(self):
         pass

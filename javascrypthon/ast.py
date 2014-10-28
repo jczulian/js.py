@@ -98,3 +98,18 @@ class JSPYAssignment(JSPYNode):
     def eval(self, env):
         env[self.var_name] = self.var_value_node.eval(env)
 
+
+class JSPYException(Exception):
+    pass
+
+
+class JSPYVariable(JSPYNode):
+    def __init__(self, var_name):
+        self.var_name = var_name
+        
+    def eval(self, env):
+        if env.has_key(self.var_name):
+            return env[self.var_name]
+        else:
+            raise JSPYException('Unbound variable: %s' % self.var_name)
+
