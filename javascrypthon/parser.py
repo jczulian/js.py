@@ -1,5 +1,6 @@
 from ply import yacc
-from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString, JSPYAssignment, JSPYVariable
+from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString, JSPYAssignment, JSPYVariable, \
+    JSPYFunction
 
 from javascrypthon.lexer import tokens
 
@@ -42,8 +43,59 @@ def p_top_statement(p):
 
 def p_function_definition(p):
     """
-    function_definition : empty
+    function_definition : named_function
     """
+    p[0] = p[1]
+
+
+def p_named_function(p):
+    """
+    named_function : FUNCTION IDENT formal_parameters_and_body
+    """
+    parameters, body = p[3]
+    name = p[2]
+    function = JSPYFunction(name=name, parameters=parameters, body=body)
+
+    p[0] = function
+
+
+
+def p_formal_parameters_and_body(p):
+    """
+    formal_parameters_and_body : LPAREN formal_parameters RPAREN LCURLY top_statements RCURLY
+    """
+    p[0] = [p[2], p[5]]
+
+
+def p_formal_parameters(p):
+    """
+    formal_parameters : empty
+                      | formal_parameters_prefix
+    """
+    if p.slice[1].type == 'empty':
+        p[0] = []
+    else:
+        p[0] = p[1]
+
+
+def p_formal_parameters_prefix(p):
+    """
+    formal_parameters_prefix : formal_parameter
+                             | formal_parameters_prefix COLUMN formal_parameter
+    """
+    # TODO make sure that parameter names are unique among themselves
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[3])
+        p[0] = p[1]
+
+
+def p_formal_parameter(p):
+    """
+    formal_parameter : IDENT
+    """
+    p[0] = p[1]
 
 
 def p_statement(p):

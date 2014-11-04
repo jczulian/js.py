@@ -104,12 +104,24 @@ class JSPYException(Exception):
 
 
 class JSPYVariable(JSPYNode):
-    def __init__(self, var_name):
-        self.var_name = var_name
+    def __init__(self, name):
+        self.name = name
         
     def eval(self, env):
-        if env.has_key(self.var_name):
-            return env[self.var_name]
+        if env.has_key(self.name):
+            return env[self.name]
         else:
-            raise JSPYException('Unbound variable: %s' % self.var_name)
+            raise JSPYException('Unbound variable: %s' % self.name)
+
+
+class JSPYFunction(JSPYNode):
+    def __init__(self, name, parameters, body):
+        self.name = name
+        self.parameters = parameters
+        self.body = body
+
+    def __eq__(self, other):
+        self.name == other.name and \
+        self.arguments == other.arguments and \
+        self.body == other.body
 

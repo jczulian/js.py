@@ -8,7 +8,10 @@ tokens = (
     'EQUAL',
     'LPAREN',
     'RPAREN',
+    'LCURLY',
+    'RCURLY',
     'SEMI_CO',
+    'COLUMN',
     'NUMBER',
     'STRING',
     'IDENT'
@@ -21,10 +24,15 @@ t_DIVIDE = r'\/'
 t_EQUAL = r'='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
+t_LCURLY = r'{'
+t_RCURLY = r'}'
 t_SEMI_CO = r';'
+t_COLUMN = r','
 
 reserved = {
-    'var': 'VAR'
+    'var': 'VAR',
+    'function': 'FUNCTION',
+    'return': 'RETURN',
 }
 
 tokens = tokens + tuple(reserved.values())

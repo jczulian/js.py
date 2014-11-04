@@ -1,5 +1,5 @@
 import unittest
-from javascrypthon.ast import JSPYRoot, JSPYNumber, JSPYBinOp, JSPYStatement, JSPYString
+from javascrypthon.ast import JSPYRoot, JSPYNumber, JSPYBinOp, JSPYStatement, JSPYString, JSPYVariable, JSPYFunction
 
 from javascrypthon.parser import parser
 
@@ -36,3 +36,25 @@ class TestParser(unittest.TestCase):
         )
 
         self.assertEqual(root, expected)
+
+    def test_function_declaration_parsing(self):
+        root = parser.parse("function func(x, y) { x + y }")
+
+        expected = JSPYRoot(
+            statements=[
+            ],
+            functions=[
+                JSPYFunction(
+                    name='func',
+                    parameters=['x', 'y'],
+                    body=JSPYStatement(
+                        JSPYBinOp(
+                            lhs=JSPYVariable(name='x'),
+                            rhs=JSPYVariable(name='y'),
+                            operator='+'
+                        )
+                    )
+                )
+            ]
+        )
+
