@@ -47,14 +47,18 @@ class TestParser(unittest.TestCase):
                 JSPYFunction(
                     name='func',
                     parameters=['x', 'y'],
-                    body=JSPYStatement(
-                        JSPYBinOp(
-                            lhs=JSPYVariable(name='x'),
-                            rhs=JSPYVariable(name='y'),
-                            operator='+'
+                    body=[
+                        JSPYStatement(
+                            JSPYBinOp(
+                                lhs=JSPYVariable(name='x'),
+                                rhs=JSPYVariable(name='y'),
+                                operator='+'
+                            )
                         )
-                    )
+                    ]
                 )
             ]
         )
+
+        self.assertEqual(expected, root)
 

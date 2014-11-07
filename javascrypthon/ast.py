@@ -106,6 +106,9 @@ class JSPYException(Exception):
 class JSPYVariable(JSPYNode):
     def __init__(self, name):
         self.name = name
+
+    def __eq__(self, other):
+        return self.name == other.name
         
     def eval(self, env):
         if env.has_key(self.name):
@@ -121,7 +124,7 @@ class JSPYFunction(JSPYNode):
         self.body = body
 
     def __eq__(self, other):
-        self.name == other.name and \
-        self.arguments == other.arguments and \
+        return self.name == other.name and \
+        self.parameters == other.parameters and \
         self.body == other.body
 

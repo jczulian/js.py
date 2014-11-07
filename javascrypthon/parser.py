@@ -59,7 +59,6 @@ def p_named_function(p):
     p[0] = function
 
 
-
 def p_formal_parameters_and_body(p):
     """
     formal_parameters_and_body : LPAREN formal_parameters RPAREN LCURLY top_statements RCURLY
