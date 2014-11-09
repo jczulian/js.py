@@ -300,6 +300,22 @@ def p_left_side_expression(p):
 def p_call_expression(p):
     """
     call_expression : primary_expression
+                    | call_expression arguments
+    """
+    p[0] = p[1]
+
+
+def p_arguments(p):
+    """
+    arguments : LPAREN arguments_list RPAREN
+    """
+    p[0] = p[1]
+
+
+def p_arguments_list(p):
+    """
+    arguments_list : assignment_expression
+                   | arguments_list COLUMN assignment_expression
     """
     p[0] = p[1]
 

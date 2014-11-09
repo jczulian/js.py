@@ -34,11 +34,17 @@ class TestInterpreter(unittest.TestCase):
         root = parser.parse("var x = y + 2")
         self.assertRaises(JSPYException, root.eval, *[])
 
-    def test_function_declaration(self):
-        pass
+    def test_function_declaration_and_call(self):
+        js_code = """
+        function add(x, y) {
+            x + y
+        }
 
-    def test_function_call(self):
-        pass
+        add(3, 4);
+        """
+        root = parser.parse(js_code)
+
+        print root
 
     def test_closure(self):
         pass
