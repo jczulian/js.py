@@ -128,3 +128,22 @@ class JSPYFunction(JSPYNode):
         self.parameters == other.parameters and \
         self.body == other.body
 
+
+class JSPYFunctionCall(JSPYNode):
+    def __init__(self, name, bound_parameters):
+        self.name = name
+        self.bound_parameters = bound_parameters
+
+    def __eq__(self, other):
+        return self.name == other.name and \
+            self.bound_parameters == other.bound_parameters
+
+    def eval(self, env):
+        # we are facing a function call.
+        # we have to bind the given values to their formal arguments
+        # we have to look up for the function by its name
+        # then we have to 'call' the function replacing the formal
+        # arguments by the actual given values
+        pass
+
+

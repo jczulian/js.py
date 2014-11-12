@@ -1,6 +1,6 @@
 from ply import yacc
 from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString, JSPYAssignment, JSPYVariable, \
-    JSPYFunction
+    JSPYFunction, JSPYFunctionCall
 
 from javascrypthon.lexer import tokens
 
@@ -302,14 +302,17 @@ def p_call_expression(p):
     call_expression : primary_expression
                     | call_expression arguments
     """
-    p[0] = p[1]
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = JSPYFunctionCall(name=p[1], bound_parameters=p[2])
 
 
 def p_arguments(p):
     """
     arguments : LPAREN arguments_list RPAREN
     """
-    p[0] = p[1]
+    p[0] = p[2]
 
 
 def p_arguments_list(p):
@@ -317,7 +320,11 @@ def p_arguments_list(p):
     arguments_list : assignment_expression
                    | arguments_list COLUMN assignment_expression
     """
-    p[0] = p[1]
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[3])
+        p[0] = p[1]
 
 
 def p_primary_expression(p):
