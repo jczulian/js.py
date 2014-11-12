@@ -10,13 +10,14 @@ def p_program(p):
     program : top_statements
     """
     statements = list()
-    functions = list()
+    functions = dict()
 
     for stmt in p[1]:
         if isinstance(stmt, JSPYStatement):
             statements.append(stmt)
         else:
-            functions.append(stmt)
+            func = stmt
+            functions[func.name] = func
 
     p[0] = JSPYRoot(statements=statements, functions=functions)
 

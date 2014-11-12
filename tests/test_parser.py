@@ -19,7 +19,7 @@ class TestParser(unittest.TestCase):
                     )
                 )
             ],
-            functions=[]
+            functions={}
         )
 
         self.assertEqual(root, expected)
@@ -33,7 +33,7 @@ class TestParser(unittest.TestCase):
                     node=JSPYString(value="coucou je suis une string.")
                 )
             ],
-            functions=[]
+            functions={}
         )
 
         self.assertEqual(root, expected)
@@ -44,8 +44,8 @@ class TestParser(unittest.TestCase):
         expected = JSPYRoot(
             statements=[
             ],
-            functions=[
-                JSPYFunction(
+            functions={
+                'func': JSPYFunction(
                     name='func',
                     parameters=['x', 'y'],
                     body=[
@@ -58,7 +58,7 @@ class TestParser(unittest.TestCase):
                         )
                     ]
                 )
-            ]
+            }
         )
 
         self.assertEqual(expected, root)
