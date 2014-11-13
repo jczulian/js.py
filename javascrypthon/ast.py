@@ -4,17 +4,17 @@ class JSPYNode(object):
 
 class JSPYRoot(JSPYNode):
     def __init__(self, statements, functions):
-        self.functions_list = functions
+        self.functions_dict = functions
         self.statements_list = statements
         self.env = dict()
 
     def __eq__(self, other):
-        return self.functions_list == other.functions_list \
+        return self.functions_dict == other.functions_dict \
             and self.statements_list == other.statements_list
 
     def eval(self):
-        for function in self.functions_list:
-            function.eval(self.env)
+
+        self.env.update(self.functions_dict)
 
         last_stmt_value = None
         for statement in self.statements_list:
@@ -139,11 +139,20 @@ class JSPYFunctionCall(JSPYNode):
             self.bound_parameters == other.bound_parameters
 
     def eval(self, env):
-        # we are facing a function call.
-        # we have to bind the given values to their formal arguments
-        # we have to look up for the function by its name
-        # then we have to 'call' the function replacing the formal
-        # arguments by the actual given values
-        pass
+        if self.name.name in env:
+            func = env[self.name.name]
+        else:
+            raise Exception('Function used before being declared.')
+
+        self.bound_parameters = list(reversed(self.bound_parameters))
+
+        for param in func.parameters:
+            value = self.bound_parameters.pop()
+            env[param] = value.eval(env)
+
+        for stmt in func.body:
+            result = stmt.eval(env)
+
+        return result
 
 

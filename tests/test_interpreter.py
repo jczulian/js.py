@@ -44,7 +44,9 @@ class TestInterpreter(unittest.TestCase):
         """
         root = parser.parse(js_code)
 
-        print root
+        result = root.eval()
+
+        self.assertEqual(7, result)
 
     def test_closure(self):
         pass
