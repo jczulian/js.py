@@ -33,3 +33,9 @@ class TestLexer(unittest.TestCase):
         self.assertEqual(token.type, 'STRING')
         self.assertEqual(token.value, "coucou la string.")
 
+    def test_if_statement(self):
+        lexer.lexer.input('if (x == 3) { y = 2; }')
+
+        token = lexer.lexer.token()
+        self.assertEqual(token.type, 'IF')
+

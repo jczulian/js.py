@@ -5,6 +5,7 @@ tokens = (
     'MINUS',
     'MULTIPLY',
     'DIVIDE',
+    'DOUBLE_EQUAL',
     'EQUAL',
     'LPAREN',
     'RPAREN',
@@ -21,6 +22,7 @@ t_PLUS = r'\+'
 t_MINUS = r'-'
 t_MULTIPLY = r'\*'
 t_DIVIDE = r'\/'
+t_DOUBLE_EQUAL = r'=='
 t_EQUAL = r'='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
@@ -30,6 +32,8 @@ t_SEMI_CO = r';'
 t_COLUMN = r','
 
 reserved = {
+    'if': 'IF',
+    'else': 'ELSE',
     'var': 'VAR',
     'function': 'FUNCTION',
     'return': 'RETURN',

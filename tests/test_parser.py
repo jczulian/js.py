@@ -84,3 +84,16 @@ class TestParser(unittest.TestCase):
         )
 
         self.assertEqual(expected, root.statements_list[0])
+
+    def test_if_statement(self):
+        js_code = """
+        if (x == 1) {
+            x + 1
+        }
+        """
+
+        root = parser.parse(js_code)
+
+        expected = 0
+
+        self.assertEqual(expected, root.statements_list[0])

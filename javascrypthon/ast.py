@@ -156,3 +156,36 @@ class JSPYFunctionCall(JSPYNode):
         return result
 
 
+class JSPYIf(JSPYNode):
+    def __init__(self, test, consequent, alternative=None):
+        self.test = test
+        self.consequent = consequent
+        self.alternative = alternative
+
+    def __eq__(self, other):
+        return self.test == self.test and \
+            self.consequent == other.consequent and \
+            self.alternative == other.alternative
+
+    def eval(self, env):
+        #TODO implement eval for if statement
+        return 42
+
+
+class JSPYEqualityTest(JSPYNode):
+    def __init__(self, lhs, equality_type, rhs):
+        self.lhs = lhs
+        self.rhs = rhs
+        self.equality_type = equality_type
+
+    def __eq__(self, other):
+        return self.lhs == other.lhs and \
+            self.rhs == other.rhs and \
+            self.equality_type == other.equality_type
+
+    def eval(self, env):
+        lhs_value = self.lhs.eval(env)
+        rhs_value = self.rhs.eval(env)
+
+        #TODO use the equality_test to determine which type of equality should be used
+        return lhs_value == rhs_value

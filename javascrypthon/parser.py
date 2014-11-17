@@ -1,6 +1,6 @@
 from ply import yacc
 from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString, JSPYAssignment, JSPYVariable, \
-    JSPYFunction, JSPYFunctionCall
+    JSPYFunction, JSPYFunctionCall, JSPYIf, JSPYEqualityTest
 
 from javascrypthon.lexer import tokens
 
@@ -100,8 +100,10 @@ def p_formal_parameter(p):
 
 def p_statement(p):
     """
-    statement : expression_statement optional_semicolon
+    statement : if_statement
+              | expression_statement optional_semicolon
               | variable_definition optional_semicolon
+              | block
     """
     p[0] = JSPYStatement(node=p[1])
 
@@ -119,6 +121,45 @@ def p_empty_statement(p):
     empty_statement : SEMI_CO
     """
     pass
+
+
+def p_block(p):
+    """
+    block : LCURLY block_statements RCURLY
+    """
+    p[0] = p[2]
+
+
+def p_block_statements(p):
+    """
+    block_statements : empty
+                     | block_statements_prefix
+    """
+    p[0] = p[1]
+
+
+def p_block_statements_prefix(p):
+    """
+    block_statements_prefix : statement
+                            | block_statements_prefix statement
+
+    """
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[2])
+        p[0] = p[1]
+
+
+def p_if_statement(p):
+    """
+    if_statement : IF parenthesized_expression statement
+                 | IF parenthesized_expression statement ELSE statement
+    """
+    if len(p) == 4:
+        p[0] = JSPYIf(test=p[2], consequent=p[3])
+    else:
+        p[0] = JSPYIf(test=p[2], consequent=p[3], alternative=p[4])
 
 
 def p_variable_definition(p):
@@ -172,7 +213,7 @@ def p_simple_expression(p):
 
 def p_parenthesized_expression(p):
     """
-    parenthesized_expression : '(' expression ')'
+    parenthesized_expression : LPAREN expression RPAREN
     """
     p[0] = p[2]
 
@@ -233,8 +274,12 @@ def p_bitwise_and_expression(p):
 def p_equality_expression(p):
     """
     equality_expression : relational_expression
+                        | equality_expression DOUBLE_EQUAL relational_expression
     """
-    p[0] = p[1]
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = JSPYEqualityTest(lhs=p[1], equality_type=p[2], rhs=p[3])
 
 
 def p_relational_expression(p):
