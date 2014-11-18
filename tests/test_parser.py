@@ -1,6 +1,6 @@
 import unittest
 from javascrypthon.ast import JSPYRoot, JSPYNumber, JSPYBinOp, JSPYStatement, JSPYString, JSPYVariable, JSPYFunction, \
-    JSPYFunctionCall
+    JSPYFunctionCall, JSPYIf, JSPYEqualityTest
 
 from javascrypthon.parser import parser
 
@@ -91,9 +91,38 @@ class TestParser(unittest.TestCase):
             x + 1
         }
         """
-
         root = parser.parse(js_code)
 
-        expected = 0
+        if_statement = root.statements_list[0].statement
 
-        self.assertEqual(expected, root.statements_list[0])
+        expected = JSPYIf(
+            test=JSPYEqualityTest(
+                lhs=JSPYVariable(name='x'),
+                equality_type='==',
+                rhs=JSPYNumber(value=1)
+            ),
+            consequent=JSPYStatement(
+                [
+                    JSPYStatement(
+                        JSPYBinOp(
+                            lhs=JSPYVariable(name='x'),
+                            operator='+',
+                            rhs=JSPYNumber(value=1)
+                        )
+                    )
+                ]
+            ),
+            alternative=None
+        )
+
+        self.assertEqual(expected, if_statement)
+
+    def test_if_else_statement(self):
+        js_code = """
+        if (x == 1) {
+            x + 1
+        } else {
+            x - 1
+        }
+        """
+        root = parser.parse(js_code)

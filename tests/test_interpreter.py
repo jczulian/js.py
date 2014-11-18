@@ -48,6 +48,25 @@ class TestInterpreter(unittest.TestCase):
 
         self.assertEqual(7, result)
 
+    def test_recurive_function(self):
+        js_code = """
+        function add(x, y) {
+            if (y == 0) {
+                x;
+            } else {
+                add(x+1, y-1);
+            }
+        }
+
+        add(3, 4)
+        """
+
+        root = parser.parse(js_code)
+
+        result = root.eval()
+
+        self.assertEqual(7, result)
+
     def test_closure(self):
         pass
 
