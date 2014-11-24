@@ -1,6 +1,6 @@
 from ply import yacc
 from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString, JSPYAssignment, JSPYVariable, \
-    JSPYFunction, JSPYFunctionCall, JSPYIf, JSPYEqualityTest
+    JSPYFunction, JSPYFunctionCall, JSPYIf, JSPYEqualityTest, JSPYBlock
 
 from javascrypthon.lexer import tokens
 
@@ -127,7 +127,8 @@ def p_block(p):
     """
     block : LCURLY block_statements RCURLY
     """
-    p[0] = p[2]
+    block = JSPYBlock(block=p[2])
+    p[0] = block
 
 
 def p_block_statements(p):
@@ -159,7 +160,7 @@ def p_if_statement(p):
     if len(p) == 4:
         p[0] = JSPYIf(test=p[2], consequent=p[3])
     else:
-        p[0] = JSPYIf(test=p[2], consequent=p[3], alternative=p[4])
+        p[0] = JSPYIf(test=p[2], consequent=p[3], alternative=p[5])
 
 
 def p_variable_definition(p):
@@ -370,6 +371,7 @@ def p_arguments_list(p):
         p[0] = [p[1]]
     else:
         p[1].append(p[3])
+        p[1].reverse()
         p[0] = p[1]
 
 

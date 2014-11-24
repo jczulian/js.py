@@ -1,3 +1,6 @@
+from copy import copy
+
+
 class JSPYNode(object):
     pass
 
@@ -144,10 +147,13 @@ class JSPYFunctionCall(JSPYNode):
         else:
             raise Exception('Function used before being declared.')
 
-        self.bound_parameters = list(reversed(self.bound_parameters))
-
+        bound_parameters = copy(self.bound_parameters)
         for param in func.parameters:
-            value = self.bound_parameters.pop()
+            # here I don't really want to pop the bound_parameters
+            # what I really need to do is to progress in bound_parameters
+            # at the same time that I go through func.parameters
+            # there must be a better way to do that.
+            value = bound_parameters.pop()
             env[param] = value.eval(env)
 
         for stmt in func.body:
@@ -168,8 +174,25 @@ class JSPYIf(JSPYNode):
             self.alternative == other.alternative
 
     def eval(self, env):
-        #TODO implement eval for if statement
-        return 42
+        if self.test.eval(env):
+            return self.consequent.eval(env)
+        else:
+            return self.alternative.eval(env)
+
+
+class JSPYBlock(JSPYNode):
+    def __init__(self, block):
+        self.block = block
+
+    def __eq__(self, other):
+        return self.block == other.block
+
+    def eval(self, env):
+        for node in self.block:
+            value = node.eval(env)
+
+        return value
+
 
 
 class JSPYEqualityTest(JSPYNode):

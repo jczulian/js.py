@@ -49,6 +49,7 @@ class TestInterpreter(unittest.TestCase):
         self.assertEqual(7, result)
 
     def test_recurive_function(self):
+        # todo we are missing 'return' statement
         js_code = """
         function add(x, y) {
             if (y == 0) {
