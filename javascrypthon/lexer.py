@@ -37,6 +37,8 @@ reserved = {
     'var': 'VAR',
     'function': 'FUNCTION',
     'return': 'RETURN',
+    'true': 'BOOLEAN',
+    'false': 'BOOLEAN'
 }
 
 tokens = tokens + tuple(reserved.values())

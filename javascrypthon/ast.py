@@ -61,6 +61,20 @@ class JSPYString(JSPYNode):
         return self.value
 
 
+class JSPYBoolean(JSPYNode):
+    def __init__(self, value):
+        if value == 'true':
+            self.value = True
+        else:
+            self.value = False
+
+    def __eq__(self, other):
+        return self.value == other.value
+
+    def eval(self, env):
+        return self.value
+
+
 class JSPYBinOp(JSPYNode):
     def __init__(self, operator, lhs, rhs):
         self.operator = operator
@@ -145,7 +159,7 @@ class JSPYFunctionCall(JSPYNode):
         if self.name.name in env:
             func = env[self.name.name]
         else:
-            raise Exception('Function used before being declared.')
+            raise Exception('Function used before being declared: ' + self.name.name)
 
         bound_parameters = copy(self.bound_parameters)
         for param in func.parameters:
@@ -176,8 +190,13 @@ class JSPYIf(JSPYNode):
     def eval(self, env):
         if self.test.eval(env):
             return self.consequent.eval(env)
-        else:
+        elif self.alternative:
             return self.alternative.eval(env)
+        else:
+            # This is the case when there is only an 'if' without an 'else'
+            # and at the same time the 'if' didn't evaluate to True in such
+            # case we define that the 'if' expression value is None
+            return None
 
 
 class JSPYBlock(JSPYNode):
@@ -192,7 +211,6 @@ class JSPYBlock(JSPYNode):
             value = node.eval(env)
 
         return value
-
 
 
 class JSPYEqualityTest(JSPYNode):

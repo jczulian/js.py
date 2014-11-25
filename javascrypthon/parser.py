@@ -1,6 +1,6 @@
 from ply import yacc
 from javascrypthon.ast import JSPYBinOp, JSPYNumber, JSPYRoot, JSPYStatement, JSPYString, JSPYAssignment, JSPYVariable, \
-    JSPYFunction, JSPYFunctionCall, JSPYIf, JSPYEqualityTest, JSPYBlock
+    JSPYFunction, JSPYFunctionCall, JSPYIf, JSPYEqualityTest, JSPYBlock, JSPYBoolean
 
 from javascrypthon.lexer import tokens
 
@@ -200,6 +200,7 @@ def p_simple_expression(p):
     simple_expression : IDENT
                       | NUMBER
                       | STRING
+                      | BOOLEAN
                       | parenthesized_expression
     """
     if p.slice[1].type == 'IDENT':
@@ -208,6 +209,8 @@ def p_simple_expression(p):
         p[0] = JSPYNumber(p[1])
     elif p.slice[1].type == 'STRING':
         p[0] = JSPYString(p[1])
+    elif p.slice[1].type == 'BOOLEAN':
+        p[0] = JSPYBoolean(p[1])
     else:
         raise Exception('Unknown simple expression encountered.')
 
