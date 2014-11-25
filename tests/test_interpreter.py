@@ -68,6 +68,44 @@ class TestInterpreter(unittest.TestCase):
 
         self.assertEqual(7, result)
 
+    def test_mutually_recursive_functions(self):
+        js_code = """
+        function odd(x) {
+            if (x == 1) {
+                true;
+            }
+
+            if (x == 0) {
+                false;
+            } else {
+                even(x-1)
+            }
+        }
+
+        function even(x) {
+            if (x == 1) {
+                false;
+            }
+
+            if (x == 0) {
+                true;
+            } else {
+                odd(x-1)
+            }
+        }
+        """
+
+        js_code_odd = js_code + " odd(7)"
+        js_code_even = js_code + " even(6)"
+
+        root = parser.parse(js_code_odd)
+        result = root.eval()
+        self.assertEqual(True, result)
+
+        root = parser.parse(js_code_even)
+        result = root.eval()
+        self.assertEqual(True, result)
+
     def test_closure(self):
         pass
 
